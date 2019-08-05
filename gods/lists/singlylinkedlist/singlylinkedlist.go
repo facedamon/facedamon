@@ -5,8 +5,8 @@
 package singlylinkedlist
 
 import (
-	"facedamon/gods/utils"
 	"fmt"
+	"github.com/facedamon/gods/utils"
 	"strings"
 )
 

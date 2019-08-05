@@ -1,6 +1,6 @@
 package containers
 
-import "facedamon/gods/utils"
+import "github.com/facedamon/gods/utils"
 
 // container is base interface that all data structures implements
 type Container interface {
