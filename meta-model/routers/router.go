@@ -17,6 +17,7 @@ func InitRouter() *gin.Engine {
 	api := r.Group("/")
 	{
 		api.GET("/", Login)
+		api.GET("/ModelBaseWorldInfo", ModelQueryAll)
 	}
 
 	return r

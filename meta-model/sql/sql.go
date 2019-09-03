@@ -2,10 +2,11 @@ package sql
 
 import (
 	"fmt"
+	"log"
+
 	"github.com/facedamon/meta-model/pkg"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
-	"log"
 )
 
 var db *sqlx.DB
