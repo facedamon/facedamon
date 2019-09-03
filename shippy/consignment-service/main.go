@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
-	pb "facedamon/shippy/consignment-service/proto/consignment"
-	vesselPb "facedamon/shippy/vessel-service/proto/vessel"
+	pb "github.com/facedamon/shippy/consignment-service/proto/consignment"
+	vesselPb "github.com/facedamon/shippy/vessel-service/proto/vessel"
 	"github.com/micro/go-micro"
 	"log"
 )

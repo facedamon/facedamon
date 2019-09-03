@@ -3,7 +3,7 @@ package xmlparse
 import (
 	"bytes"
 	"encoding/xml"
-	"facedamon/datastream/page"
+	"github.com/facedamon/datastream/page"
 	"io/ioutil"
 	"log"
 	"strings"

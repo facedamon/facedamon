@@ -31,3 +31,28 @@ func (iterator *Iterator) Next() bool {
 	}
 	return true
 }
+
+// Value returns the current element`s value
+// Does not modify the state of the iterator
+func (iterator *Iterator) Value() interface{} {
+	return iterator.element.value
+}
+
+// Index returns the current element`s index
+// Does not modify the state of the iterator
+func (iterator *Iterator) Index() int {
+	return iterator.index
+}
+
+// Begin resets the iterator to its initial state
+// Call Next() to fetch the first element if any.
+func (iterator *Iterator) Begin() {
+	iterator.index = -1
+	iterator.element = nil
+}
+
+// First moves the iterator to the first element and returns true if there was a element
+func (iterator *Iterator) First() bool {
+	iterator.Begin()
+	return iterator.Next()
+}

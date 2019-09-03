@@ -1,8 +1,8 @@
 package lists
 
 import (
-	"facedamon/gods/containers"
-	"facedamon/gods/utils"
+	"github.com/facedamon/gods/containers"
+	"github.com/facedamon/gods/utils"
 )
 
 // List interface that all lists implement

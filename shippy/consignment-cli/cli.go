@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	pb "facedamon/shippy/consignment-service/proto/consignment"
+	pb "github.com/facedamon/shippy/consignment-service/proto/consignment"
 	"github.com/micro/go-micro"
 	"io/ioutil"
 	"log"
