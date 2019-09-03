@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<mapper>
+    <src sqlId="mysql">
+        <datasource poolName="srcCp">
+            <class>com.mysql.jdbc.Driver</class>
+            <url>@tcp(127.0.0.1:3306)/damon?charset=utf8</url>
+            <username>damon</username>
+            <pwd>damon</pwd>
+            <minimum-idle>5</minimum-idle>            <!--最小空闲链接-->
+            <idle-timeout>180000</idle-timeout>            <!--最小超时时间ms-->
+            <auto-commit>true</auto-commit>
+            <max-pool-size>10</max-pool-size>
+            <max-lifetime>1800000</max-lifetime>            <!--最长生命周期ms-->
+            <connection-timeout>30000</connection-timeout>
+            <test-query>select 1</test-query>
+        </datasource>
+        <!--select results from table.name where-->
+        <table name="user">
+            <!--暂时先不用数据类型试一试-->
+            <result column="uid" jdbcType="INTEGER" />
+            <result column="username" jdbcType="VARCHAR" />
+            <result column="password" jdbcType="VARCHAR" />
+            <where>                <!--可以为空-->
+                <!--data_dt = DATE 'P_AS_OF_DATE'
+                and end_dt = DATE 'P_AS_OF_DATE'-->
+                username = 'damon'
+            </where>
+        </table>
+    </src>
+    <det sqlId="mysql">
+        <datasource poolName="detCp">
+            <class>com.mysql.jdbc.Driver</class>
+            <url>@tcp(127.0.0.1:3306)/damon?charset=utf8</url>
+            <username>damon</username>
+            <pwd>damon</pwd>
+            <minimum-idle>5</minimum-idle>            <!--最小空闲链接-->
+            <idle-timeout>180000</idle-timeout>            <!--最小超时时间ms-->
+            <auto-commit>true</auto-commit>
+            <max-pool-size>10</max-pool-size>
+            <max-lifetime>1800000</max-lifetime>            <!--最长生命周期ms-->
+            <connection-timeout>30000</connection-timeout>
+            <test-query>select 1</test-query>
+        </datasource>
+        <table name="user">
+            <!--暂时先不用数据类型试一试-->
+            <result column="uid" jdbcType="INTEGER" />
+            <result column="username" jdbcType="VARCHAR" />
+            <result column="password" jdbcType="VARCHAR" />
+        </table>
+    </det>
+</mapper>
