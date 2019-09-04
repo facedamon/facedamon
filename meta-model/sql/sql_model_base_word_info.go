@@ -4,7 +4,9 @@ import (
 	"bytes"
 	"database/sql"
 	"errors"
+	"fmt"
 	"log"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -74,11 +76,7 @@ func (mbwi MBWI) QueryByStruct(m ModelBaseWordInfo) ([]ModelBaseWordInfo, error)
 	ms := []ModelBaseWordInfo{}
 	if n, err = mbwi.Count(); err == nil && n > 0 {
 		err = db.Select(&ms, db.Rebind(sql), args...)
-		a := make([]string, 0)
-		for _, p := range args {
-			a = append(a, p.(string))
-		}
-		log.Println(db.Rebind(sql), strings.Join(a, ","))
+		sqlLayoutWithArgs(sql, args)
 	}
 	if nil != err {
 		return nil, err
@@ -87,6 +85,102 @@ func (mbwi MBWI) QueryByStruct(m ModelBaseWordInfo) ([]ModelBaseWordInfo, error)
 		return nil, errors.New("the table Model_Base_Word_Info is empty")
 	}
 	return ms, nil
+}
+
+func (mbwi MBWI) Inserts(ms []ModelBaseWordInfo) error {
+	if len(ms) < 1 {
+		return errors.New(fmt.Sprintf("Model_Base_Word_Info Inserts Should Not Be Exec, Because The Model Is Empty"))
+	}
+	tx, err := db.Begin()
+	if nil != err {
+		return errors.New(fmt.Sprintf("Model_Base_Word_Info Inserts Begin Transaction Fail '%v'", err))
+	}
+	defer tx.Rollback()
+	stmt, err := tx.Prepare("insert into Model_Base_Word_Info() values(?,?,?,?,?,?,?,?,?,?,?)")
+	if nil != err {
+		return errors.New(fmt.Sprintf("Model_Base_Word_Info Inserts Prepare Fail '%v'", err))
+	}
+	for _, v := range ms {
+		_, err = stmt.Exec(v.UniqueNum, v.BaseWordId, v.BaseWordCn, v.BaseWordEn, v.Abbreviation1, v.Abbreviation2, v.UserId, v.Creator, time.Now(), v.Modifier, v.ModifyTime)
+		if nil != err {
+			return errors.New(fmt.Sprintf("Model_Base_Word_Info Inserts Exec Fail '%v'", err))
+		}
+	}
+	err = tx.Commit()
+	if nil != err {
+		return errors.New(fmt.Sprintf("Model_Base_Word_Info Insert Commit Fail '%v'", err))
+	}
+	stmt.Close()
+	return nil
+}
+
+func (mbwi MBWI) Insert(m ModelBaseWordInfo) (string, error) {
+	tx, err := db.Begin()
+	if nil != err {
+		log.Printf("Model_Base_Word_Info Insert Begin Transaction Fail '%v'", err)
+		return "", err
+	}
+	defer tx.Rollback()
+	stmt, err := tx.Prepare("insert into Model_Base_Word_Info() values(?,?,?,?,?,?,?,?,?,?,?)")
+	if nil != err {
+		log.Printf("Model_Base_Word_Info Insert Prepare Fail '%v'", err)
+		return "", err
+	}
+	res, err := stmt.Exec(m.UniqueNum, m.BaseWordId, m.BaseWordCn, m.BaseWordEn, m.Abbreviation1, m.Abbreviation2, m.UserId, m.Creator, time.Now(), m.Modifier, m.ModifyTime)
+	if nil != err {
+		log.Printf("Model_Base_Word_Info Insert Exec Fail '%v'", err)
+		return "", err
+	}
+	num, _ := res.LastInsertId()
+	err = tx.Commit()
+	if nil != err {
+		log.Printf("Model_Base_Word_Info Insert Commit Fail '%v'", err)
+		return "", err
+	}
+	stmt.Close()
+	return strconv.FormatInt(num, 10), nil
+}
+
+func (mbwi MBWI) UpdateByNum(m ModelBaseWordInfo) (string, error) {
+	n := m.UniqueNum
+
+	tx, err := db.Begin()
+	if nil != err {
+		log.Printf("Model_Base_Word_Info UpdateByNum(%s) Begin Transaction Fail '%v'", n, err)
+		return "", err
+	}
+	defer tx.Rollback()
+	stmt, err := tx.Prepare("update Model_Base_Word_Info set (Base_Word_Id = ?, Base_Word_Cn = ?, Base_Word_En = ?, Abbreviation1 = ?, Abbreviation2 = ?, User_Id = ?,Modifier = ?, Modify_Time = ?) where Unique_Num = ?")
+	if nil != err {
+		log.Printf("Model_Base_Word_Info UpdateByNum(%s) Begin Prepare Fail '%v'", n, err)
+		return "", err
+	}
+	res, err := stmt.Exec(m.BaseWordId, m.BaseWordCn, m.BaseWordEn, m.Abbreviation1, m.Abbreviation2, m.UserId, m.Modifier, time.Now(), n)
+	if nil != err {
+		log.Printf("Model_Base_Word_Info UpdateByNum(%s) Begin Result Fail '%v'", n, err)
+		return "", err
+	}
+	num, _ := res.RowsAffected()
+	err = tx.Commit()
+	if nil != err {
+		log.Printf("Model_Base_Word_Info UpdateByNum(%s) Commit Fail '%v'", n, err)
+		return "", err
+	}
+	// *sql.Tx一旦释放,连接就回到连接池中，这里stmt在关闭时，必须在commit或rollback之前
+	stmt.Close()
+	return strconv.FormatInt(num, 10), nil
+}
+
+func sqlLayoutWithArgs(sql string, args []interface{}) {
+	a := make([]string, 0)
+	for _, p := range args {
+		a = append(a, p.(string))
+	}
+	log.Println(db.Rebind(sql), strings.Join(a, ","))
+}
+
+func sqlLayout(sql string) {
+	log.Println(db.Rebind(sql))
 }
 
 func buildMbwiSql(m ModelBaseWordInfo) (string, []interface{}) {

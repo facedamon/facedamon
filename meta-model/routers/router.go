@@ -25,6 +25,8 @@ func InitRouter() *gin.Engine {
 		modelBaseWorldInfo.POST("/queryByNum/:num", m.QueryByNum)
 		modelBaseWorldInfo.POST("/count", m.Count)
 		modelBaseWorldInfo.POST("/list", m.QueryByStruct)
+		modelBaseWorldInfo.POST("/updateByNum/:num", m.UpdateByNum)
+		modelBaseWorldInfo.POST("/insert", m.Insert)
 	}
 
 	return r
