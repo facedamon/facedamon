@@ -1,3 +1,5 @@
+use meta;
+
 drop table if exists Model_Base_Word_Info;
 create table Model_Base_Word_Info(
     Unique_Num varchar(20) not null primary key comment '唯一编号',

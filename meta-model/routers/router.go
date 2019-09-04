@@ -17,10 +17,14 @@ func InitRouter() *gin.Engine {
 	api := r.Group("/")
 	{
 		api.GET("/", Login)
-		<<<<<<< HEAD
-		====== =
-		api.GET("/ModelBaseWorldInfo", ModelQueryAll)
-		>>>>>>> d974396c06a7e9489d9aefaf411ed4299f64e87d
+	}
+
+	m := NewMbwi()
+	modelBaseWorldInfo := r.Group("/ModelBaseWordInfo")
+	{
+		modelBaseWorldInfo.POST("/queryByNum/:num", m.QueryByNum)
+		modelBaseWorldInfo.POST("/count", m.Count)
+		modelBaseWorldInfo.POST("/list", m.QueryByStruct)
 	}
 
 	return r
